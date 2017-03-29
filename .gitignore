@@ -25,3 +25,8 @@ appsettings.json
 
 #paket
 .paket/paket.exe
+
+#OSX nonsense
+.DS_Store
+._.DS_Store
+[Dd]ocs/._*.xlsx

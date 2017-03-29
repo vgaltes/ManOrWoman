@@ -1,13 +1,68 @@
+#if INTERACTIVE
+#I "../Packages/Fsharp.Data/lib/net40"
+#I "../Packages/Newtonsoft.Json/lib/net45"
+#endif
+
 #r "System.Net.Http"
 #r "Newtonsoft.Json"
+#r "Fsharp.Data"
 
 open System.Net
 open System.Net.Http
 open Newtonsoft.Json
+open FSharp.Data
 
 type Named = {
     name: string
 }
+
+type NameData = CsvProvider<"Order,Name,Frequency,AverageAge", HasHeaders = true, 
+                                            Schema = "Order(int),Name,Frequency(int), AverageAge(float)">
+
+type NameStatistic = {Frequency: int}
+
+type Result = {
+    Gender: string
+    Frequency: int
+    Percentage:float
+}
+
+#if INTERACTIVE
+let folder = __SOURCE_DIRECTORY__ + "/data/spain/"
+#else
+let folder = Environment.ExpandEnvironmentVariables(@"%HOME%\data\spain\")
+#endif
+
+let getGenderStatistics (fileName:string) (name:string) =
+    let names = NameData.Load(fileName)
+
+    let nameData =
+        names.Rows
+        |> Seq.filter(fun r -> r.Name = name.ToUpperInvariant() )
+        |> Seq.tryHead
+        
+    match nameData with
+    | None -> None
+    | Some x -> Some {Frequency = x.Frequency}
+
+let getNameStatistics (name: string) =
+    let statistics =
+        [|folder + "men.csv"; folder + "women.csv"|]
+        |> Array.map(fun x -> getGenderStatistics x name)
+
+    let calculatePercentage (x:int) (y:int) = 
+        float x * 100.0 / (float x + float y)
+
+    match statistics with
+    | [|Some m;Some w|] -> 
+        match (m.Frequency > w.Frequency) with
+        | true -> Some {Gender = "Man"; Frequency = m.Frequency; Percentage = calculatePercentage m.Frequency w.Frequency}
+        | false -> Some {Gender = "Woman"; Frequency = w.Frequency; Percentage = calculatePercentage w.Frequency m.Frequency}
+    | [|Some m;None|] -> 
+        Some {Gender = "Man"; Frequency = m.Frequency; Percentage = 100.0} 
+    | [|None;Some w|] -> 
+        Some {Gender = "Woman"; Frequency = w.Frequency; Percentage = 100.0} 
+    | _ -> None
 
 let Run(req: HttpRequestMessage, log: TraceWriter) =
     async {
@@ -21,13 +76,8 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
 
         match name with
         | Some x ->
-            return req.CreateResponse(HttpStatusCode.OK, "Hello " + x.Value);
+            let statistics = getNameStatistics x
+            return req.CreateResponse(HttpStatusCode.OK, x);
         | None ->
-            let! data = req.Content.ReadAsStringAsync() |> Async.AwaitTask
-
-            if not (String.IsNullOrEmpty(data)) then
-                let named = JsonConvert.DeserializeObject<Named>(data)
-                return req.CreateResponse(HttpStatusCode.OK, "Hello " + named.name);
-            else
-                return req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
+            return req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
     } |> Async.RunSynchronously
