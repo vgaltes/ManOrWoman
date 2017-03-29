@@ -22,3 +22,6 @@ project.lock.json
 /data
 .secrets
 appsettings.json
+
+#paket
+.paket/paket.exe
