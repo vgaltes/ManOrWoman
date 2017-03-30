@@ -27,11 +27,7 @@ type Result = {
     Percentage:float
 }
 
-// #if INTERACTIVE
-// let folder = __SOURCE_DIRECTORY__ + "/data/spain/"
-// #else
 
-//#endif
 
 let getGenderStatistics (fileName:string) (name:string) =
     let names = NameData.Load(fileName)
@@ -46,7 +42,12 @@ let getGenderStatistics (fileName:string) (name:string) =
     | Some x -> Some {NameStatistic.Frequency = x.Frequency}
 
 let getNameStatistics (name: string) (log:TraceWriter) =
+    #if INTERACTIVE
+    let folder = __SOURCE_DIRECTORY__ + "/data/spain/"
+    #else
     let folder = Environment.ExpandEnvironmentVariables(@"%HOME%\data\spain\")
+    #endif
+    
     log.Info(sprintf "The data folder is %s" folder)
     let statistics =
         [|folder + "men.csv"; folder + "women.csv"|]
