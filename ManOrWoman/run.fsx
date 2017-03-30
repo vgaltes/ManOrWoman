@@ -82,9 +82,9 @@ let Run(req: HttpRequestMessage, name:string, log: TraceWriter) =
         //     | None -> return req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
         // | None ->
         //     return req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
-        let statistics = getNameStatistics x
+        let statistics = getNameStatistics name
         match statistics with
              | Some y -> return req.CreateResponse(HttpStatusCode.OK, y);
              | None -> return req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
-             
+
     } |> Async.RunSynchronously
