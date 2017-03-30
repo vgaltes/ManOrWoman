@@ -12,12 +12,6 @@ open System.Net.Http
 open System.Net.Http.Headers
 open Newtonsoft.Json
 open FSharp.Data
-open System.IO
-open System.Runtime.Serialization
-open System.Runtime.Serialization.Formatters.Binary
-open System.Runtime.Serialization.Json
-open System.Xml
-open System.Xml.Serialization
 
 type Named = {
     name: string
@@ -75,12 +69,6 @@ let getNameStatistics (name: string) (log:TraceWriter) =
     | _ -> None
 
 let toString = System.Text.Encoding.ASCII.GetString
-let serializeJson<'a> (x : 'a) = 
-    let jsonSerializer = new DataContractJsonSerializer(typedefof<'a>)
-
-    use stream = new MemoryStream()
-    jsonSerializer.WriteObject(stream, x)
-    toString <| stream.ToArray()
 
 let Run(req: HttpRequestMessage, log: TraceWriter) =
     async {
@@ -99,10 +87,9 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
                 let statistics = getNameStatistics x.Value log
                 match statistics with
                 | Some y -> 
-                    //let json = JsonConvert.SerializeObject(y)
-                    let json = serializeJson y
+                    let json = JsonConvert.SerializeObject(y)
                     let jsonResponse = sprintf "%s" json
-                    req.CreateResponse(HttpStatusCode.OK, jsonResponse)
+                    req.CreateResponse(HttpStatusCode.OK, jsonResponse, "text/plain")
                 | None -> req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name")
             | None ->
                 req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value")
