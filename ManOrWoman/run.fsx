@@ -68,6 +68,7 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
     async {
         log.Info(sprintf 
             "F# HTTP trigger function processed a request.")
+        log.Info(sprintf "The data folder is %s" folder)
 
         //Set name to query string
         let name =
