@@ -12,6 +12,12 @@ open System.Net.Http
 open System.Net.Http.Headers
 open Newtonsoft.Json
 open FSharp.Data
+open System.IO
+open System.Runtime.Serialization
+open System.Runtime.Serialization.Formatters.Binary
+open System.Runtime.Serialization.Json
+open System.Xml
+open System.Xml.Serialization
 
 type Named = {
     name: string
@@ -67,6 +73,14 @@ let getNameStatistics (name: string) (log:TraceWriter) =
     | [|None;Some w|] -> 
         Some {Gender = "Woman"; Frequency = w.Frequency; Percentage = 100.0} 
     | _ -> None
+
+let toString = System.Text.Encoding.ASCII.GetString
+let serializeJson<'a> (x : 'a) = 
+    let jsonSerializer = new DataContractJsonSerializer(typedefof<'a>)
+
+    use stream = new MemoryStream()
+    jsonSerializer.WriteObject(stream, x)
+    toString <| stream.ToArray()
 
 let Run(req: HttpRequestMessage, log: TraceWriter) =
     async {
