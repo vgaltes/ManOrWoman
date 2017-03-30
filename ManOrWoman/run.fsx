@@ -47,7 +47,7 @@ let getNameStatistics (name: string) (log:TraceWriter) =
     #else
     let folder = Environment.ExpandEnvironmentVariables(@"%HOME%\data\spain\")
     #endif
-    
+
     log.Info(sprintf "The data folder is %s" folder)
     let statistics =
         [|folder + "men.csv"; folder + "women.csv"|]
@@ -82,7 +82,7 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
         | Some x ->
             let statistics = getNameStatistics x.Value log
             match statistics with
-            | Some y -> return req.CreateResponse(HttpStatusCode.OK, y);
+            | Some y -> return req.CreateResponse(HttpStatusCode.OK, JsonConvert.SerializeObject(y));
             | None -> return req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
         | None ->
             return req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
