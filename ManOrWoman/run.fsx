@@ -27,11 +27,11 @@ type Result = {
     Percentage:float
 }
 
-#if INTERACTIVE
-let folder = __SOURCE_DIRECTORY__ + "/data/spain/"
-#else
+// #if INTERACTIVE
+// let folder = __SOURCE_DIRECTORY__ + "/data/spain/"
+// #else
 let folder = Environment.ExpandEnvironmentVariables(@"%HOME%\data\spain\")
-#endif
+//#endif
 
 let getGenderStatistics (fileName:string) (name:string) =
     let names = NameData.Load(fileName)
