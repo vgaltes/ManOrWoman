@@ -22,14 +22,11 @@ type NameData = CsvProvider<"Order,Name,Frequency,AverageAge", HasHeaders = true
 
 type NameStatistic = {Frequency: int}
 
-[<CLIMutable>]
 type Result = {
     Gender: string
     Frequency: int
     Percentage:float
 }
-
-
 
 let getGenderStatistics (fileName:string) (name:string) =
     let names = NameData.Load(fileName)
@@ -85,7 +82,7 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
             | Some x ->
                 let statistics = getNameStatistics x.Value log
                 match statistics with
-                | Some y -> req.CreateResponse(HttpStatusCode.OK, y);
+                | Some y -> req.CreateResponse(HttpStatusCode.OK, JsonConvert.SerializeObject(y);
                 | None -> req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
             | None ->
                 req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
