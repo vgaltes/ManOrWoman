@@ -43,7 +43,7 @@ let getGenderStatistics (fileName:string) (name:string) =
         
     match nameData with
     | None -> None
-    | Some x -> Some {Frequency = x.Frequency}
+    | Some x -> Some {NameStatistic.Frequency = x.Frequency}
 
 let getNameStatistics (name: string) =
     let statistics =
