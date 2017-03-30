@@ -76,7 +76,7 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
 
         match name with
         | Some x ->
-            let statistics = getNameStatistics x
+            let statistics = getNameStatistics x.Value
             match statistics with
             | Some y -> return req.CreateResponse(HttpStatusCode.OK, y);
             | None -> return req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
