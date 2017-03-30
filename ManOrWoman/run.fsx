@@ -85,7 +85,7 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
                 let statistics = getNameStatistics x.Value log
                 match statistics with
                 | Some y -> 
-                    let jsonResponse = sprintf "%s" JsonConvert.SerializeObject(y)
+                    let jsonResponse = (sprintf "%s" JsonConvert.SerializeObject(y))
                     req.CreateResponse(HttpStatusCode.OK, jsonResponse)
                 | None -> req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name")
             | None ->
