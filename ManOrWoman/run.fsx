@@ -45,8 +45,9 @@ let getGenderStatistics (fileName:string) (name:string) =
     | None -> None
     | Some x -> Some {NameStatistic.Frequency = x.Frequency}
 
-let getNameStatistics (name: string) =
+let getNameStatistics (name: string) (log:TraceWriter) =
     let folder = Environment.ExpandEnvironmentVariables(@"%HOME%\data\spain\")
+    log.Info(sprintf "The data folder is %s" folder)
     let statistics =
         [|folder + "men.csv"; folder + "women.csv"|]
         |> Array.map(fun x -> getGenderStatistics x name)
@@ -69,7 +70,7 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
     async {
         log.Info(sprintf 
             "F# HTTP trigger function processed a request.")
-        log.Info(sprintf "The data folder is %s" folder)
+        
 
         //Set name to query string
         let name =
@@ -78,7 +79,7 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
 
         match name with
         | Some x ->
-            let statistics = getNameStatistics x.Value
+            let statistics = getNameStatistics x.Value log
             match statistics with
             | Some y -> return req.CreateResponse(HttpStatusCode.OK, y);
             | None -> return req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
