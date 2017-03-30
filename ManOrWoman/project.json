@@ -2,7 +2,8 @@
   "frameworks": {
     "net46":{
       "dependencies": {
-        "FSharp.Data": "2.3.2"
+        "FSharp.Data": "2.3.2",
+        "System.Runtime.Serialization.Json": "4.3.0"
       }
     }
   }
