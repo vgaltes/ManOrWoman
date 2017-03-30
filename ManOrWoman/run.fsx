@@ -64,22 +64,27 @@ let getNameStatistics (name: string) =
         Some {Gender = "Woman"; Frequency = w.Frequency; Percentage = 100.0} 
     | _ -> None
 
-let Run(req: HttpRequestMessage, log: TraceWriter) =
+let Run(req: HttpRequestMessage, name:string, log: TraceWriter) =
     async {
         log.Info(sprintf 
             "F# HTTP trigger function processed a request.")
 
         // Set name to query string
-        let name =
-            req.GetQueryNameValuePairs()
-            |> Seq.tryFind (fun q -> q.Key = "name")
+        // let name =
+        //     req.GetQueryNameValuePairs()
+        //     |> Seq.tryFind (fun q -> q.Key = "name")
 
-        match name with
-        | Some x ->
-            let statistics = getNameStatistics x.Value
-            match statistics with
-            | Some y -> return req.CreateResponse(HttpStatusCode.OK, y);
-            | None -> return req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
-        | None ->
-            return req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
+        // match name with
+        // | Some x ->
+        //     let statistics = getNameStatistics x.Value
+        //     match statistics with
+        //     | Some y -> return req.CreateResponse(HttpStatusCode.OK, y);
+        //     | None -> return req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
+        // | None ->
+        //     return req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
+        let statistics = getNameStatistics x
+        match statistics with
+             | Some y -> return req.CreateResponse(HttpStatusCode.OK, y);
+             | None -> return req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
+             
     } |> Async.RunSynchronously
