@@ -84,10 +84,10 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
             | Some x ->
                 let statistics = getNameStatistics x.Value log
                 match statistics with
-                | Some y -> req.CreateResponse(HttpStatusCode.OK, JsonConvert.SerializeObject(y), "application/json");
-                | None -> req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
+                | Some y -> req.CreateResponse(HttpStatusCode.OK, JsonConvert.SerializeObject(y), "application/json")
+                | None -> req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name")
             | None ->
-                req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
+                req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value")
 
         return response
 
