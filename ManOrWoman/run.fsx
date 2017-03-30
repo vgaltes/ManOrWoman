@@ -78,13 +78,17 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
             req.GetQueryNameValuePairs()
             |> Seq.tryFind (fun q -> q.Key.ToLowerInvariant() = "name")
 
-        match name with
-        | Some x ->
-            let statistics = getNameStatistics x.Value log
-            match statistics with
-            | Some y -> return req.CreateResponse(HttpStatusCode.OK, JsonConvert.SerializeObject(y));
-            | None -> return req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
-        | None ->
-            return req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
+        let response =
+            match name with
+            | Some x ->
+                let statistics = getNameStatistics x.Value log
+                match statistics with
+                | Some y -> req.CreateResponse(HttpStatusCode.OK, JsonConvert.SerializeObject(y));
+                | None -> req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name");
+            | None ->
+                req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value");
+
+        response.Content.Headers.ContentType <- MediaTypeHeaderValue("application/json")
+        return response
 
     } |> Async.RunSynchronously
