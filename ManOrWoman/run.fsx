@@ -4,15 +4,15 @@
 #endif
 
 #r "System.Net.Http"
-#r "Newtonsoft.Json"
 #r "Fsharp.Data"
+#r "System.Runtime.Serialization"
+
 #load "Types.fs"
 #load "Statistics.fs"
 
 open System.Net
 open System.Net.Http
 open System.Net.Http.Headers
-open Newtonsoft.Json
 open Statistics
 
 let Run(req: HttpRequestMessage, log: TraceWriter) =
@@ -38,7 +38,7 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
                 | Some y -> 
                     let json = JsonConvert.SerializeObject(y)
                     let jsonResponse = sprintf "%s" json
-                    req.CreateResponse(HttpStatusCode.OK, jsonResponse, "text/plain")
+                    req.CreateResponse(HttpStatusCode.OK, jsonResponse)
                 | None -> req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name")
             | None ->
                 req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value")
