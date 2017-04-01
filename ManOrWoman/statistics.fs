@@ -1,4 +1,6 @@
 module Statistics
+    open Types
+
     let getGenderStatistics (fileName:string) (name:string) =
         let names = NameData.Load(fileName)
 
@@ -35,4 +37,3 @@ module Statistics
         | [|None;Some w|] -> 
             Some {Gender = "Woman"; Frequency = w.Frequency; Percentage = 100.0} 
         | _ -> None
-        
