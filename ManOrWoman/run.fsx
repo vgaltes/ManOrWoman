@@ -36,9 +36,7 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
                 let statistics = getNameStatistics x.Value folder
                 match statistics with
                 | Some y -> 
-                    let json = JsonConvert.SerializeObject(y)
-                    let jsonResponse = sprintf "%s" json
-                    req.CreateResponse(HttpStatusCode.OK, jsonResponse)
+                    req.CreateResponse(HttpStatusCode.OK, y)
                 | None -> req.CreateResponse(HttpStatusCode.BadRequest, "We haven't found the name")
             | None ->
                 req.CreateResponse(HttpStatusCode.BadRequest, "Specify a Name value")
