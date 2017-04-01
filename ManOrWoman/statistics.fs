@@ -14,13 +14,7 @@ module Statistics
         | None -> None
         | Some x -> Some {NameStatistic.Frequency = x.Frequency}
 
-    let getNameStatistics (name: string) =
-        #if INTERACTIVE
-        let folder = __SOURCE_DIRECTORY__ + "/data/spain/"
-        #else
-        let folder = Environment.ExpandEnvironmentVariables(@"%HOME%\data\spain\")
-        #endif
-
+    let getNameStatistics (name: string) (folder:string) =
         let statistics =
             [|folder + "men.csv"; folder + "women.csv"|]
             |> Array.map(fun x -> getGenderStatistics x name)

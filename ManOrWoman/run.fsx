@@ -24,10 +24,16 @@ let Run(req: HttpRequestMessage, log: TraceWriter) =
             req.GetQueryNameValuePairs()
             |> Seq.tryFind (fun q -> q.Key.ToLowerInvariant() = "name")
 
+        #if INTERACTIVE
+        let folder = __SOURCE_DIRECTORY__ + "/data/spain/"
+        #else
+        let folder = Environment.ExpandEnvironmentVariables(@"%HOME%\data\spain\")
+        #endif
+
         let response =
             match name with
             | Some x ->
-                let statistics = getNameStatistics x.Value
+                let statistics = getNameStatistics x.Value folder
                 match statistics with
                 | Some y -> 
                     let json = JsonConvert.SerializeObject(y)
