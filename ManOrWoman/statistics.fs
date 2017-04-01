@@ -1,5 +1,6 @@
 module Statistics
     open Types
+    open FSharp.Data
 
     let getGenderStatistics (fileName:string) (name:string) =
         let names = NameData.Load(fileName)

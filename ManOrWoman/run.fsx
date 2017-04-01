@@ -13,8 +13,6 @@ open System.Net
 open System.Net.Http
 open System.Net.Http.Headers
 open Newtonsoft.Json
-open FSharp.Data
-//open Types
 open Statistics
 
 let Run(req: HttpRequestMessage, log: TraceWriter) =
