@@ -1,5 +1,6 @@
 namespace Types
-
+    open FSharp.Data
+    
     type Named = {
         name: string
     }
